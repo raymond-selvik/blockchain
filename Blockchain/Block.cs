@@ -1,43 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
+using System.Text;
 
-namespace Blockchain
+namespace BlockchainClient
 {
-    [Serializable]
     class Block
     {
-        //private DateTime timestamp;
-        private string previousHash;
-        private List<string> transactions;
+        public ulong index { get; set; }
+        private DateTime timestamp;
+        public string previousHash {get; set;}
+        public string data;
 
-        private string blockHash;
+        public string blockHash { get; set; }
 
-        public Block(string previousHash, List<string> transactions)
+        public Block(string previousHash, string data)
         {
-            //this.timestamp = DateTime.UtcNow;
+            index = 0;
+            this.timestamp = DateTime.UtcNow;
             this.previousHash = previousHash;
-            this.transactions = transactions;
-            this.blockHash = CalculateBlockHash(); 
+            this.data = data;
+            this.blockHash = CalculateHash(); 
         }
 
-        string CalculateBlockHash()
+        public string CalculateHash()
         {
             MD5 md5 = MD5.Create();
 
-            using (var memoryStream = new MemoryStream())
-            {
-                var binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize(memoryStream, this);
+            byte[] encodedData = Encoding.UTF8.GetBytes($"{timestamp}-{previousHash}-{data}");
+            var hash = md5.ComputeHash(encodedData);
+            blockHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-                var hash = md5.ComputeHash(memoryStream.ToArray());
-                blockHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-
-                memoryStream.Close();
-                return blockHash;
-            }
+            return blockHash;
+            
         }
 
         public string GetBlockHash()

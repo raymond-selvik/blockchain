@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Blockchain
+namespace BlockchainClient
 {
     class Program
     {
         static void Main(string[] args)
         {
-            List<String> transactions = new List<string>();
-            transactions.Add("Hfhgfello");
-            transactions.Add("dddd");
+           
+            Block block1 = new Block(null, "Hello");
+            Block block2 = new Block(null, "World");
 
-            Block genesisBlock = new Block(null, transactions);
+            Blockchain blockchain = new Blockchain();
+            blockchain.AddNewBlock(block1);
+            blockchain.AddNewBlock(block2);
 
-            List<String> transactions2 = new List<string>();
-            transactions2.Add("øøok,e");
+            foreach(Block b in blockchain.Chain)
+            {
+                Console.WriteLine(b.blockHash);
+            }
 
-            Block block2 = new Block(genesisBlock.GetBlockHash(), transactions2);
+            Console.WriteLine("Blockchain is valid: " + blockchain.IsValid());
 
-            Console.WriteLine(genesisBlock.GetBlockHash());
-            Console.WriteLine(block2.GetBlockHash());
+            blockchain.Chain[1].data = "{sender:Henry,receiver:MaHesh,amount:1000}";
+ 
+            Console.WriteLine("Blockchain is valid: " + blockchain.IsValid());
+
+            blockchain.Chain[1].blockHash = blockchain.Chain[1].CalculateHash();
+
+            Console.WriteLine("Blockchain is valid: " + blockchain.IsValid());
         }
     }
 }
