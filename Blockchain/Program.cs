@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace BlockchainClient
@@ -7,37 +8,19 @@ namespace BlockchainClient
     {
         static void Main(string[] args)
         {
-           
-            Block block1 = new Block(null, "Hello");
-            Block block2 = new Block(null, "World");
-
-            Blockchain blockchain = new Blockchain();
-
-
             var startTime = DateTime.Now;
 
-            blockchain.AddNewBlock(block1);
-            blockchain.AddNewBlock(block2);
+            Blockchain blockchain = new Blockchain();
+            blockchain.CreateTransaction(new Transaction("Ole", "Dole", 10));
+            blockchain.ProcessPendingTransactions("Doffen");
+            Console.WriteLine(JsonConvert.SerializeObject(blockchain, Formatting.Indented));
+
+            blockchain.CreateTransaction(new Transaction("Dole", "Ole", 100));
+            blockchain.CreateTransaction(new Transaction("Dole", "Ole", 500));
+            blockchain.ProcessPendingTransactions("DOnald");
+            Console.WriteLine(JsonConvert.SerializeObject(blockchain, Formatting.Indented));
 
             var endTime = DateTime.Now;
-
-
-            Console.WriteLine($"Duration: {endTime - startTime}");
-
-            foreach (Block b in blockchain.Chain)
-            {
-                Console.WriteLine(b.BlockHash);
-            }
-
-            Console.WriteLine("Blockchain is valid: " + blockchain.IsValid());
-
-            blockchain.Chain[1].Data = "{sender:Henry,receiver:MaHesh,amount:1000}";
- 
-            Console.WriteLine("Blockchain is valid: " + blockchain.IsValid());
-
-            blockchain.Chain[1].BlockHash = blockchain.Chain[1].CalculateHash();
-
-            Console.WriteLine("Blockchain is valid: " + blockchain.IsValid());
         }
     }
 }

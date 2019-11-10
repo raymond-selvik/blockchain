@@ -7,12 +7,17 @@ namespace BlockchainClient
     class Blockchain
     {
         public List<Block> Chain { get; set; }
+        public List<Transaction> PendingTransactions { get; set; }
         public int Difficulty { get; set; } = 2;
+
+        public int MinerReward { get; set; } = 5;
 
         public Blockchain()
         {
             Chain = new List<Block>();
             Chain.Add(new Block(null, null));
+
+            PendingTransactions = new List<Transaction>();
         }
 
         public Block GetLatestBlock()
@@ -49,6 +54,21 @@ namespace BlockchainClient
             }
 
             return true;
+        }
+
+        public void CreateTransaction(Transaction transaction)
+        {
+            PendingTransactions.Add(transaction);
+        }
+
+        public void ProcessPendingTransactions(string minerAdress)
+        {
+            Block block = new Block(GetLatestBlock().BlockHash, PendingTransactions);
+            AddNewBlock(block);
+
+            PendingTransactions = new List<Transaction>();
+            var transaction = new Transaction(null, minerAdress, MinerReward);
+            CreateTransaction(transaction);
         }
     }
 }
