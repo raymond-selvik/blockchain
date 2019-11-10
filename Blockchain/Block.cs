@@ -6,37 +6,47 @@ namespace BlockchainClient
 {
     class Block
     {
-        public ulong index { get; set; }
-        private DateTime timestamp;
-        public string previousHash {get; set;}
-        public string data;
-
-        public string blockHash { get; set; }
+        public ulong Index { get; set; }
+        private DateTime Timtestamp;
+        public string PreviousHash {get; set;}
+        public string Data;
+        public int Nonce { get; set; } = 0;
+        public string BlockHash { get; set; }
 
         public Block(string previousHash, string data)
         {
-            index = 0;
-            this.timestamp = DateTime.UtcNow;
-            this.previousHash = previousHash;
-            this.data = data;
-            this.blockHash = CalculateHash(); 
+            Index = 0;
+            this.Timtestamp = DateTime.UtcNow;
+            this.PreviousHash = previousHash;
+            this.Data = data;
+            this.BlockHash = CalculateHash(); 
         }
 
         public string CalculateHash()
         {
             MD5 md5 = MD5.Create();
 
-            byte[] encodedData = Encoding.UTF8.GetBytes($"{timestamp}-{previousHash}-{data}");
+            byte[] encodedData = Encoding.UTF8.GetBytes($"{Timtestamp}-{PreviousHash}-{Data}-{Nonce}");
             var hash = md5.ComputeHash(encodedData);
-            blockHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            BlockHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-            return blockHash;
-            
+            return BlockHash;
+        }
+
+        public void Mine(int difficulty)
+        {
+            var leadingZeros = new string('0', difficulty);
+
+            while(this.BlockHash == null || this.BlockHash.Substring(0, difficulty) != leadingZeros)
+            {
+                this.Nonce++;
+                this.BlockHash = CalculateHash();
+            }
         }
 
         public string GetBlockHash()
         {
-            return blockHash;
+            return BlockHash;
         }
     }
 }

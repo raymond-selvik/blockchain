@@ -7,6 +7,7 @@ namespace BlockchainClient
     class Blockchain
     {
         public List<Block> Chain { get; set; }
+        public int Difficulty { get; set; } = 2;
 
         public Blockchain()
         {
@@ -22,9 +23,9 @@ namespace BlockchainClient
         public void AddNewBlock(Block block)
         {
             Block latestBlock = GetLatestBlock();
-            block.index = latestBlock.index + 1;
-            block.previousHash = latestBlock.GetBlockHash();
-            block.blockHash = block.CalculateHash();
+            block.Index = latestBlock.Index + 1;
+            block.PreviousHash = latestBlock.GetBlockHash();
+            block.Mine(this.Difficulty);
 
             Chain.Add(block);
         }
@@ -36,12 +37,12 @@ namespace BlockchainClient
                 Block current = Chain[i];
                 Block previous = Chain[i - 1];
 
-                if(current.blockHash != current.CalculateHash())
+                if(current.BlockHash != current.CalculateHash())
                 {
                     return false;
                 }
 
-                if(current.previousHash != previous.blockHash)
+                if(current.PreviousHash != previous.BlockHash)
                 {
                     return false;
                 }
