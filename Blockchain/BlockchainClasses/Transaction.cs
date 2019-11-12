@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BlockchainClient
+namespace BlockchainClient.BlockchainClasses
 {
-    class Transaction
+    public class Transaction
     {
         public string SenderAddress { get; set; }
         public string ReceiverAddress { get; set; }
