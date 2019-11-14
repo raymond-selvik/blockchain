@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BlockchainClient
+namespace BlockchainClient.BlockchainClasses
 {
-    class Blockchain
+    public class Blockchain
     {
         public List<Block> Chain { get; set; }
         public List<Transaction> PendingTransactions { get; set; }
@@ -15,9 +15,13 @@ namespace BlockchainClient
         public Blockchain()
         {
             Chain = new List<Block>();
-            Chain.Add(new Block(null, null));
 
             PendingTransactions = new List<Transaction>();
+        }
+
+        public void AddGenesisBlock()
+        {
+            Chain.Add(new Block(null, null));
         }
 
         public Block GetLatestBlock()

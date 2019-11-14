@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BlockchainClient
+namespace BlockchainClient.BlockchainClasses
 {
-    class Block
+    public class Block
     {
         public ulong Index { get; set; }
         private DateTime Timtestamp;

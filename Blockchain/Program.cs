@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using BlockchainClient.BlockchainClasses;
+using BlockchainClient.Communication;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +13,8 @@ namespace BlockchainClient
         public static P2PClient Client = new P2PClient();
         public static string name = "Unknown";
         public static Blockchain blockchain = new Blockchain();
+
+        public static CommunicationService communicationService = new CommunicationService();
 
         static void Main(string[] args)
         {
@@ -28,6 +32,8 @@ namespace BlockchainClient
             {
                 Console.WriteLine($"Current user is {name}");
             }
+
+            blockchain.AddGenesisBlock();
 
             int selection = 0;
             while (selection != 4)
@@ -52,7 +58,8 @@ namespace BlockchainClient
                             break;
                         blockchain.CreateTransaction(new Transaction(name, receiverName, int.Parse(amount)));
                         blockchain.ProcessPendingTransactions(name);
-                        Client.Broadcast(JsonConvert.SerializeObject(blockchain));
+                        //Client.Broadcast(JsonConvert.SerializeObject(blockchain));
+                        communicationService.BroadcastBlockchain(blockchain);
                         break;
                     case 3:
                         Console.WriteLine("Blockchain");
