@@ -21,7 +21,10 @@ namespace BlockchainClient.BlockchainClasses
 
         public void AddGenesisBlock()
         {
-            Chain.Add(new Block(null, null));
+            Block genesisBlock = new Block(null, null);
+            genesisBlock.BlockHash = genesisBlock.CalculateBlockHash();
+
+            Chain.Add(genesisBlock);
         }
 
         public Block GetLatestBlock()
@@ -46,7 +49,7 @@ namespace BlockchainClient.BlockchainClasses
                 Block current = Chain[i];
                 Block previous = Chain[i - 1];
 
-                if(current.BlockHash != current.CalculateHash())
+                if(current.BlockHash != current.CalculateBlockHash())
                 {
                     return false;
                 }

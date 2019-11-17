@@ -18,6 +18,8 @@ namespace BlockchainClient
 
         static void Main(string[] args)
         {
+            blockchain.Difficulty = 4;
+
             if (args.Length >= 1)
                 Port = int.Parse(args[0]);
             if (args.Length >= 2)
@@ -59,7 +61,7 @@ namespace BlockchainClient
                         blockchain.CreateTransaction(new Transaction(name, receiverName, int.Parse(amount)));
                         blockchain.ProcessPendingTransactions(name);
                         //Client.Broadcast(JsonConvert.SerializeObject(blockchain));
-                        communicationService.BroadcastBlockchain(blockchain);
+                        //communicationService.BroadcastBlockchain(blockchain);
                         break;
                     case 3:
                         Console.WriteLine("Blockchain");

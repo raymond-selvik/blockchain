@@ -32,7 +32,7 @@ namespace BlockchainClient.Communication
         static async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
             // Process the message
-            Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
+            //Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
             var messageString = Encoding.UTF8.GetString(message.Body);
 
             Blockchain receivedBlockchain = JsonConvert.DeserializeObject<Blockchain>(messageString);

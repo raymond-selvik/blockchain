@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace BlockchainClient.BlockchainClasses
         public string PreviousHash {get; set;}
         public List<Transaction> Data { get; set; }
         public int Nonce { get; set; } = 0;
-        public string BlockHash { get; set; }
+        public string BlockHash { get; set; } = null;
 
         public Block(string previousHash, List<Transaction> data)
         {
@@ -21,31 +22,61 @@ namespace BlockchainClient.BlockchainClasses
             this.Timtestamp = DateTime.UtcNow;
             this.PreviousHash = previousHash;
             this.Data = data;
-            this.BlockHash = CalculateHash(); 
         }
 
-        public string CalculateHash()
+        public string CalculateBlockHash()
         {
-            MD5 md5 = MD5.Create();
-
+            SHA256 sha256 = SHA256.Create();
+            
             var serializedData = JsonConvert.SerializeObject(Data);
 
-            byte[] encodedData = Encoding.UTF8.GetBytes($"{Timtestamp}-{PreviousHash}-{serializedData}-{Nonce}");
-            var hash = md5.ComputeHash(encodedData);
-            BlockHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            byte[] encodedData = Encoding.UTF8.GetBytes($"{Timtestamp}-{Index}-{PreviousHash}-{serializedData}-{Nonce}");
+            var hash = sha256.ComputeHash(encodedData);
+
+            BlockHash = Convert.ToBase64String(hash);
 
             return BlockHash;
         }
 
         public void Mine(int difficulty)
         {
-            var leadingZeros = new string('0', difficulty);
+            SHA256 sha256 = SHA256.Create();
 
-            while(this.BlockHash == null || this.BlockHash.Substring(0, difficulty) != leadingZeros)
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            while (true)
             {
-                this.Nonce++;
-                this.BlockHash = CalculateHash(); 
+                string hashedData = CalculateBlockHash();
+
+                if(hashedData.StartsWith(DifficultyString(difficulty), StringComparison.Ordinal))
+                {
+                    this.BlockHash = hashedData;
+
+                    stopwatch.Stop();
+                    TimeSpan ts = stopwatch.Elapsed;
+
+                    string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
+
+                    Console.WriteLine("Mined block with difficult level: {0}, Nonce: {1}, Elapsed Time: {2}", difficulty, Nonce, elapsedTime);
+
+                    return;
+                }
+
+                Nonce++;
             }
+        }
+
+        private string DifficultyString(int difficulty)
+        {
+            string difficultyString = string.Empty;
+
+            for (int i = 0; i < difficulty; i++)
+            {
+                difficultyString += "0";
+            }
+
+            return difficultyString;
         }
 
         public string GetBlockHash()
