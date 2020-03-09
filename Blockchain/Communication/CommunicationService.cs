@@ -12,7 +12,7 @@ namespace BlockchainClient.Communication
 {
     public class CommunicationService
     {
-        const string ServiceBusConnectionString = "Endpoint=sb://rdsblockchain.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+7+b5ZfR32ak6g3KEdBISz/u+LpOfCQnqcLvYwZuEsg=";
+        const string ServiceBusConnectionString = "**";
         const string TopicName = "blockchain";
         const string SubscriptionName = "blockchain-sub";
 
